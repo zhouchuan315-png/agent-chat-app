@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getLogtoContext } from '@logto/next/server-actions';
 import { logtoConfig } from '../../logto';
-import OpenAI from "openai"
+import OpenAI from "openai";
+import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
   baseURL: process.env.OPENAI_BASE_URL,
 })
+
 export async function POST(req: NextRequest) {
   try {
     // 检查用户是否已认证
@@ -23,10 +25,10 @@ export async function POST(req: NextRequest) {
     }
 
     // 转换消息格式为OpenAI API所需的格式
-    const formattedMessages = [
-      { role: "system", content: "You are a helpful AI assistant. Please respond in Chinese." },
-      ...messages.map(msg => ({
-        role: msg.isUser ? "user" : "assistant",
+    const formattedMessages: ChatCompletionMessageParam[] = [
+      { role: "system", content: "You are a helpful AI assistant. Please respond in Chinese and format your answer using Markdown syntax. Use appropriate markdown elements like headers, lists, code blocks, bold text etc. when needed to make the response well-structured and easy to read." },
+        ...messages.map(msg => ({
+        role: msg.isUser ? ("user" as const) : ("assistant" as const),
         content: msg.content
       }))
     ];
@@ -40,11 +42,10 @@ export async function POST(req: NextRequest) {
 
     // 使用配置的OpenAI客户端调用API，启用流式响应
     const stream = await client.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: "gpt-5.1",
       messages: formattedMessages,
-      max_tokens: 500,
-      temperature: 0.7,
       stream: true,
+      max_tokens: 4096, // 增加max_tokens参数解除回复长度限制
     });
 
     // 创建ReadableStream来处理流式响应

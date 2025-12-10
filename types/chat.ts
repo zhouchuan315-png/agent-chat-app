@@ -1,5 +1,6 @@
 export type Message = {
   id: string;
+  sessionId: string;
   content: string;
   isUser: boolean;
   timestamp: Date;

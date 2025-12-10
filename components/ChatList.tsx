@@ -33,7 +33,7 @@ export default function ChatList({
         </Button>
       </div>
       
-      <ScrollArea className="flex-1 p-2">
+      <ScrollArea className="flex-1 p-2"> 
         {sessions.length === 0 ? (
           <div className="text-center py-8 text-gray-500">
             <p>暂无对话</p>
