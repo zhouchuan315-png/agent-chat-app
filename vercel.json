@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/"
+    }
+  ],
+  "env": {
+    "NEXTAUTH_URL": "https://agent-chat-app.vercel.app",
+    "NEXTAUTH_SECRET": "${NEXTAUTH_SECRET}"
+  }
+}
